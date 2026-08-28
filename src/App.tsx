@@ -30,6 +30,7 @@ import {
   useLocation,
   Router as WouterRouter,
 } from 'wouter';
+import { FaFacebookF, FaInstagram, FaTiktok } from 'react-icons/fa';
 
 const queryClient = new QueryClient();
 
@@ -205,7 +206,7 @@ function Home() {
 
       <footer className="site-footer">
         <div className="container-shell">
-          <div className="footer-top"><div className="footer-brand"><img className="footer-logo" src="/assets/logo_1787767467020.png" alt="شعار شعبان SHABAAN" data-testid="img-footer-logo" /><p>SHABAAN - Online Training &amp; Nutrition<br />خطة واضحة، متابعة مستمرة، وتقدم تقدر تلاحظه.</p></div><div className="footer-contact"><span>للاستفسار والاشتراك</span><a href={whatsapp(messages.general)} target="_blank" rel="noreferrer" data-testid="link-footer-whatsapp">+20 100 025 7565</a></div></div>
+          <div className="footer-top"><div className="footer-brand"><img className="footer-logo" src="/assets/logo_1787767467020.png" alt="شعار شعبان SHABAAN" data-testid="img-footer-logo" /><p>SHABAAN - Online Training &amp; Nutrition<br />خطة واضحة، متابعة مستمرة، وتقدم تقدر تلاحظه.</p></div><div className="footer-social"><span>تابعني على السوشيال</span><div className="social-links"><a className="social-link" href="https://www.facebook.com/mahmoud.shabaan.1/" target="_blank" rel="noreferrer" aria-label="تابعني على Facebook" data-testid="link-facebook"><FaFacebookF size={16} /><span>Facebook</span></a><a className="social-link" href="https://www.instagram.com/mahmoud.shabaan.1/" target="_blank" rel="noreferrer" aria-label="تابعني على Instagram" data-testid="link-instagram"><FaInstagram size={17} /><span>Instagram</span></a><a className="social-link" href="https://www.tiktok.com/@mahmoud.shabaan.1" target="_blank" rel="noreferrer" aria-label="تابعني على TikTok" data-testid="link-tiktok"><FaTiktok size={15} /><span>TikTok</span></a></div></div><div className="footer-contact"><span>للاستفسار والاشتراك</span><a href={whatsapp(messages.general)} target="_blank" rel="noreferrer" data-testid="link-footer-whatsapp">+20 100 025 7565</a></div></div>
           <div className="footer-bottom"><span>جميع الحقوق محفوظة لـ SHABAAN</span><span className="footer-en">SHABAAN / ONLINE COACHING</span></div>
         </div>
       </footer>
