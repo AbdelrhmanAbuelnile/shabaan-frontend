@@ -4,6 +4,10 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
+import AdminLogin from '@/pages/admin-login';
+import AdminDashboard from '@/pages/admin-dashboard';
+import { useAssets } from '@/hooks/use-assets';
+import { gallerySlots, testimonialSlots } from '@/lib/slots';
 import {
   ArrowLeft,
   Check,
@@ -46,14 +50,10 @@ function Home() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const transformations = [
-    '/assets/1_1787767467021.jpeg',
-    '/assets/1_-_2_1787767467021.jpeg',
-    '/assets/1_-_3_1787767467021.jpeg',
-    '/assets/2_-_1_1787767467021.jpeg',
-    '/assets/2_-_3_1787767467021.jpeg',
-    '/assets/2_-_2_1787767467022.jpeg',
-  ];
+  const { data: assetsBySlot } = useAssets();
+  const transformations = gallerySlots.map(
+    (slotDef) => assetsBySlot?.[slotDef.slot]?.url ?? slotDef.fallback,
+  );
   const chats = [
     '/assets/5_1787767467022.jpeg',
     '/assets/3_-_1_1787767467022.jpeg',
@@ -61,14 +61,9 @@ function Home() {
     '/assets/4_1787767467022.jpeg',
     '/assets/6_1787767467022.jpeg',
   ];
-  const audioFiles = [
-    '/assets/1_-_اسامه_ركابي_1787767467020.ogg',
-    '/assets/2_-_احمد_يسري_1787767467023.ogg',
-    '/assets/3_-_عبدالرحمن_مدثر_1787767467023.ogg',
-    '/assets/4_-_مصطفي_كلحي_1787767467023.ogg',
-    '/assets/5_-_احمد_شمس_1787767467023.ogg',
-    '/assets/6_-_نور_ماهر_1787767467020.ogg',
-  ];
+  const audioFiles = testimonialSlots.map(
+    (slotDef) => assetsBySlot?.[slotDef.slot]?.url ?? slotDef.fallback,
+  );
 
   return (
     <div className="shabaan-app" dir="rtl">
@@ -268,6 +263,8 @@ function Router() {
     <RoutedErrorBoundary>
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/admin" component={AdminLogin} />
+        <Route path="/admin/dashboard" component={AdminDashboard} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>
