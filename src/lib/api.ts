@@ -1,4 +1,10 @@
-const API_BASE = `${import.meta.env.VITE_API_URL ?? "http://localhost:9000"}/api`;
+// Strip a trailing slash and a trailing "/api" so this works whether
+// VITE_API_URL is set to the bare origin or already includes the /api
+// suffix — a misconfigured env var shouldn't silently double up the path
+// and 404 every request (this happened in production: VITE_API_URL was
+// set to ".../api", producing ".../api/api/...").
+const rawApiUrl = import.meta.env.VITE_API_URL ?? "http://localhost:9000";
+const API_BASE = `${rawApiUrl.replace(/\/$/, "").replace(/\/api$/, "")}/api`;
 
 export class ApiError extends Error {
 	status: number;
