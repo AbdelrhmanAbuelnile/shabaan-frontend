@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   apiJson,
+  createAsset,
   deleteAsset,
   getUploadSignature,
   replaceAsset,
@@ -37,6 +38,24 @@ export function useUploadAsset() {
       const signature = await getUploadSignature(type);
       const uploaded = await uploadToCloudinary(signature, file);
       return replaceAsset(slot, {
+        type,
+        url: uploaded.secure_url,
+        publicId: uploaded.public_id,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['assets'] });
+    },
+  });
+}
+
+export function useAddAsset() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ type, file }: { type: 'image' | 'voicenote'; file: File }) => {
+      const signature = await getUploadSignature(type);
+      const uploaded = await uploadToCloudinary(signature, file);
+      return createAsset({
         type,
         url: uploaded.secure_url,
         publicId: uploaded.public_id,

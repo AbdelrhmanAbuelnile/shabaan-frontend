@@ -7,7 +7,7 @@ import NotFound from '@/pages/not-found';
 import AdminLogin from '@/pages/admin-login';
 import AdminDashboard from '@/pages/admin-dashboard';
 import { useAssets } from '@/hooks/use-assets';
-import { gallerySlots, testimonialSlots } from '@/lib/slots';
+import { bySlotNumber, gallerySlots, isFixedSlot, testimonialSlots } from '@/lib/slots';
 import {
   ArrowLeft,
   Check,
@@ -51,9 +51,20 @@ function Home() {
   };
 
   const { data: assetsBySlot } = useAssets();
-  const transformations = gallerySlots.map(
-    (slotDef) => assetsBySlot?.[slotDef.slot]?.url ?? slotDef.fallback,
-  );
+  const extraAssets = Object.values(assetsBySlot ?? {}).filter((asset) => !isFixedSlot(asset.slot));
+  const extraGalleryUrls = extraAssets
+    .filter((asset) => asset.type === 'image')
+    .sort(bySlotNumber)
+    .map((asset) => asset.url);
+  const extraTestimonialUrls = extraAssets
+    .filter((asset) => asset.type === 'voicenote')
+    .sort(bySlotNumber)
+    .map((asset) => asset.url);
+
+  const transformations = [
+    ...gallerySlots.map((slotDef) => assetsBySlot?.[slotDef.slot]?.url ?? slotDef.fallback),
+    ...extraGalleryUrls,
+  ];
   const chats = [
     '/assets/5_1787767467022.jpeg',
     '/assets/3_-_1_1787767467022.jpeg',
@@ -61,9 +72,10 @@ function Home() {
     '/assets/4_1787767467022.jpeg',
     '/assets/6_1787767467022.jpeg',
   ];
-  const audioFiles = testimonialSlots.map(
-    (slotDef) => assetsBySlot?.[slotDef.slot]?.url ?? slotDef.fallback,
-  );
+  const audioFiles = [
+    ...testimonialSlots.map((slotDef) => assetsBySlot?.[slotDef.slot]?.url ?? slotDef.fallback),
+    ...extraTestimonialUrls,
+  ];
 
   return (
     <div className="shabaan-app" dir="rtl">

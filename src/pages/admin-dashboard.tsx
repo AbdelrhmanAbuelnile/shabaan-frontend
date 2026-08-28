@@ -16,8 +16,8 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useLogout, useMe } from '@/hooks/use-auth';
-import { useAssets, useDeleteAsset, useUploadAsset } from '@/hooks/use-assets';
-import { gallerySlots, testimonialSlots, type SlotDef } from '@/lib/slots';
+import { useAddAsset, useAssets, useDeleteAsset, useUploadAsset } from '@/hooks/use-assets';
+import { bySlotNumber, gallerySlots, isFixedSlot, testimonialSlots } from '@/lib/slots';
 import type { ContentAsset } from '@/lib/api';
 
 export default function AdminDashboard() {
@@ -31,6 +31,12 @@ export default function AdminDashboard() {
   }, [meLoading, me, navigate]);
 
   if (meLoading || !me) return null;
+
+  const assets = Object.values(assetsBySlot ?? {});
+  const extraGalleryAssets = assets.filter((a) => a.type === 'image' && !isFixedSlot(a.slot)).sort(bySlotNumber);
+  const extraTestimonialAssets = assets
+    .filter((a) => a.type === 'voicenote' && !isFixedSlot(a.slot))
+    .sort(bySlotNumber);
 
   return (
     <div className="min-h-screen bg-muted/30 p-4 sm:p-8" dir="rtl">
@@ -55,12 +61,19 @@ export default function AdminDashboard() {
             {gallerySlots.map((slotDef) => (
               <SlotCard
                 key={slotDef.slot}
-                slotDef={slotDef}
+                slot={slotDef.slot}
+                type={slotDef.type}
+                fallback={slotDef.fallback}
                 asset={assetsBySlot?.[slotDef.slot]}
                 loading={assetsLoading}
+                isFixed
               />
             ))}
+            {extraGalleryAssets.map((asset) => (
+              <SlotCard key={asset.slot} slot={asset.slot} type={asset.type} asset={asset} loading={assetsLoading} isFixed={false} />
+            ))}
           </div>
+          <AddAssetButton type="image" label="إضافة صورة جديدة" />
         </section>
 
         <section className="flex flex-col gap-3">
@@ -69,73 +82,125 @@ export default function AdminDashboard() {
             {testimonialSlots.map((slotDef) => (
               <SlotCard
                 key={slotDef.slot}
-                slotDef={slotDef}
+                slot={slotDef.slot}
+                type={slotDef.type}
+                fallback={slotDef.fallback}
                 asset={assetsBySlot?.[slotDef.slot]}
                 loading={assetsLoading}
+                isFixed
               />
             ))}
+            {extraTestimonialAssets.map((asset) => (
+              <SlotCard key={asset.slot} slot={asset.slot} type={asset.type} asset={asset} loading={assetsLoading} isFixed={false} />
+            ))}
           </div>
+          <AddAssetButton type="voicenote" label="إضافة تسجيل صوتي جديد" />
         </section>
       </div>
     </div>
   );
 }
 
+function AddAssetButton({ type, label }: { type: 'image' | 'voicenote'; label: string }) {
+  const add = useAddAsset();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    add.mutate(
+      { type, file },
+      {
+        onSuccess: (asset) => toast.success(`تمت إضافة ${asset.slot}`),
+        onError: (error) => toast.error(error.message),
+      },
+    );
+  };
+
+  return (
+    <div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept={type === 'image' ? 'image/*' : 'audio/*'}
+        className="hidden"
+        onChange={handleFileChange}
+        data-testid={`input-add-${type}`}
+      />
+      <Button
+        variant="outline"
+        disabled={add.isPending}
+        onClick={() => fileInputRef.current?.click()}
+        data-testid={`button-add-${type}`}
+      >
+        {add.isPending ? 'جاري الإضافة...' : label}
+      </Button>
+    </div>
+  );
+}
+
 function SlotCard({
-  slotDef,
+  slot,
+  type,
+  fallback,
   asset,
   loading,
+  isFixed,
 }: {
-  slotDef: SlotDef;
+  slot: string;
+  type: 'image' | 'voicenote';
+  fallback?: string;
   asset: ContentAsset | undefined;
   loading: boolean;
+  isFixed: boolean;
 }) {
   const upload = useUploadAsset();
   const deleteMutation = useDeleteAsset();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const hasAsset = Boolean(asset);
-  const currentUrl = asset?.url ?? slotDef.fallback;
+  const currentUrl = asset?.url ?? fallback;
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     event.target.value = '';
     if (!file) return;
     upload.mutate(
-      { slot: slotDef.slot, type: slotDef.type, file },
+      { slot, type, file },
       {
-        onSuccess: () => toast.success(`تم رفع الملف لـ ${slotDef.slot}`),
+        onSuccess: () => toast.success(`تم رفع الملف لـ ${slot}`),
         onError: (error) => toast.error(error.message),
       },
     );
   };
 
   const handleDelete = () => {
-    deleteMutation.mutate(slotDef.slot, {
-      onSuccess: () => toast.success(`تم حذف ${slotDef.slot}`),
+    deleteMutation.mutate(slot, {
+      onSuccess: () => toast.success(`تم حذف ${slot}`),
       onError: (error) => toast.error(error.message),
     });
   };
 
   return (
-    <Card data-testid={`card-slot-${slotDef.slot}`}>
+    <Card data-testid={`card-slot-${slot}`}>
       <CardHeader>
-        <CardTitle className="text-sm font-mono">{slotDef.slot}</CardTitle>
+        <CardTitle className="text-sm font-mono">{slot}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {loading ? (
           <Spinner className="size-5" />
-        ) : slotDef.type === 'image' ? (
-          <img src={currentUrl} alt={slotDef.slot} className="aspect-square w-full rounded-md object-cover" />
-        ) : (
+        ) : currentUrl && type === 'image' ? (
+          <img src={currentUrl} alt={slot} className="aspect-square w-full rounded-md object-cover" />
+        ) : currentUrl ? (
           <audio controls src={currentUrl} className="w-full" />
-        )}
+        ) : null}
         <input
           ref={fileInputRef}
           type="file"
-          accept={slotDef.type === 'image' ? 'image/*' : 'audio/*'}
+          accept={type === 'image' ? 'image/*' : 'audio/*'}
           className="hidden"
           onChange={handleFileChange}
-          data-testid={`input-file-${slotDef.slot}`}
+          data-testid={`input-file-${slot}`}
         />
         <div className="flex gap-2">
           <Button
@@ -144,7 +209,7 @@ function SlotCard({
             className="flex-1"
             disabled={upload.isPending}
             onClick={() => fileInputRef.current?.click()}
-            data-testid={`button-upload-${slotDef.slot}`}
+            data-testid={`button-upload-${slot}`}
           >
             {upload.isPending ? 'جاري الرفع...' : hasAsset ? 'استبدال' : 'رفع'}
           </Button>
@@ -155,21 +220,23 @@ function SlotCard({
                   size="sm"
                   variant="destructive"
                   disabled={deleteMutation.isPending}
-                  data-testid={`button-delete-${slotDef.slot}`}
+                  data-testid={`button-delete-${slot}`}
                 >
                   حذف
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent dir="rtl">
                 <AlertDialogHeader>
-                  <AlertDialogTitle>حذف {slotDef.slot}؟</AlertDialogTitle>
+                  <AlertDialogTitle>حذف {slot}؟</AlertDialogTitle>
                   <AlertDialogDescription>
-                    سيعود هذا العنصر لعرض الملف الافتراضي على الصفحة العامة حتى يتم رفع ملف جديد.
+                    {isFixed
+                      ? 'سيعود هذا العنصر لعرض الملف الافتراضي على الصفحة العامة حتى يتم رفع ملف جديد.'
+                      : 'سيتم حذف هذا العنصر نهائيا من الصفحة العامة. هذا الإجراء لا يمكن التراجع عنه.'}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDelete} data-testid={`button-confirm-delete-${slotDef.slot}`}>
+                  <AlertDialogAction onClick={handleDelete} data-testid={`button-confirm-delete-${slot}`}>
                     حذف
                   </AlertDialogAction>
                 </AlertDialogFooter>

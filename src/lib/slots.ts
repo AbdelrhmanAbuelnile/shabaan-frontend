@@ -35,3 +35,20 @@ export const testimonialSlots: SlotDef[] = TESTIMONIAL_FALLBACKS.map((fallback, 
 }));
 
 export const allSlots: SlotDef[] = [...gallerySlots, ...testimonialSlots];
+
+const fixedSlotIds = new Set(allSlots.map((s) => s.slot));
+
+// True for the original 12 slots (with a static fallback file). Anything
+// else is an admin-added asset — no fallback, and deleting it removes it
+// from the public page's list entirely rather than reverting to a default.
+export function isFixedSlot(slot: string): boolean {
+  return fixedSlotIds.has(slot);
+}
+
+// Sorts "<prefix>-N" slot names numerically by N (falls back to string sort).
+export function bySlotNumber(a: { slot: string }, b: { slot: string }): number {
+  const numA = Number(a.slot.split('-').pop());
+  const numB = Number(b.slot.split('-').pop());
+  if (Number.isFinite(numA) && Number.isFinite(numB)) return numA - numB;
+  return a.slot.localeCompare(b.slot);
+}
