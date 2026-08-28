@@ -20,7 +20,7 @@ Deployed as a static Vite build on Vercel. `vercel.json` rewrites all routes to 
 ## Structure
 
 - `src/App.tsx` — the public landing page (hero, plans, gallery, testimonials, FAQ, footer) as one component. Reads `gallery-N`/`testimonial-N` image/audio URLs from the backend via `useAssets`, falling back to the bundled `public/assets` files for any slot with nothing uploaded yet (or if the request fails).
-- `src/pages/admin-login.tsx`, `src/pages/admin-dashboard.tsx` — `/admin` and `/admin/dashboard`. The dashboard is client-side gated on `GET /api/auth/me` and lets the admin replace the 12 backend-managed slots (6 gallery photos, 6 testimonial voicenotes); chat screenshots stay static, not admin-managed.
+- `src/pages/admin-login.tsx`, `src/pages/admin-dashboard.tsx` — `/admin` and `/admin/dashboard`. The dashboard is client-side gated on `GET /api/auth/me` and lets the admin add, replace, or delete gallery photos and testimonial voicenotes.
 - `src/lib/api.ts` — fetch wrapper (`credentials: 'include'` for the auth cookie) plus the Cloudinary direct-upload helper.
 - `src/lib/slots.ts` — the slot ID ↔ static-fallback-file mapping shared by the public page and the dashboard.
 - `src/hooks/use-auth.ts`, `src/hooks/use-assets.ts` — react-query hooks for auth state and asset data/uploads.

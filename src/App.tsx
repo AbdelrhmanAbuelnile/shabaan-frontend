@@ -65,13 +65,6 @@ function Home() {
     ...gallerySlots.map((slotDef) => assetsBySlot?.[slotDef.slot]?.url ?? slotDef.fallback),
     ...extraGalleryUrls,
   ];
-  const chats = [
-    '/assets/5_1787767467022.jpeg',
-    '/assets/3_-_1_1787767467022.jpeg',
-    '/assets/3_-_2_1787767467022.jpeg',
-    '/assets/4_1787767467022.jpeg',
-    '/assets/6_1787767467022.jpeg',
-  ];
   const audioFiles = [
     ...testimonialSlots.map((slotDef) => assetsBySlot?.[slotDef.slot]?.url ?? slotDef.fallback),
     ...extraTestimonialUrls,
@@ -186,13 +179,6 @@ function Home() {
           <div className="container-shell">
             <div className="section-intro"><div><div className="eyebrow">صوت التجربة</div><h2 className="section-heading">اسمع تجربة<br /><span>عملائنا</span></h2></div><p className="section-copy">تسجيلات صوتية من العملاء، مرتبة كما تم إرسالها. اضغط تشغيل للاستماع.</p></div>
             <div className="audio-grid">{audioFiles.map((src, index) => <AudioTestimonial key={src} src={src} index={index} />)}</div>
-          </div>
-        </section>
-
-        <section className="section chat-section" id="proof">
-          <div className="container-shell">
-            <div className="section-intro"><div><div className="eyebrow">من داخل المتابعة</div><h2 className="section-heading">كلام <span>عملائنا</span></h2></div><p className="section-copy">لقطات من محادثات المتابعة. الصور كاملة حتى تقدر تشوف التفاصيل بوضوح.</p></div>
-            <div className="chat-grid">{chats.map((src, index) => <button className="chat-item" key={src} onClick={() => setLightbox({ src, label: `CLIENT MESSAGE ${index + 1}` })} aria-label={`فتح محادثة العميل ${index + 1}`} data-testid={`button-chat-${index + 1}`}><img src={src} alt={`محادثة عميل رقم ${index + 1}`} loading="lazy" /><span className="gallery-index">{String(index + 1).padStart(2, '0')}</span></button>)}</div>
           </div>
         </section>
 
