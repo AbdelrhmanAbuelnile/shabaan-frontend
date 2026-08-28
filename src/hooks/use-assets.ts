@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   apiJson,
+  deleteAsset,
   getUploadSignature,
   replaceAsset,
   uploadToCloudinary,
@@ -41,6 +42,16 @@ export function useUploadAsset() {
         publicId: uploaded.public_id,
       });
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['assets'] });
+    },
+  });
+}
+
+export function useDeleteAsset() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (slot: string) => deleteAsset(slot),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assets'] });
     },

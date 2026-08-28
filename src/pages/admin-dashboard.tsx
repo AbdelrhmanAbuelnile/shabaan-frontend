@@ -4,8 +4,19 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { useLogout, useMe } from '@/hooks/use-auth';
-import { useAssets, useUploadAsset } from '@/hooks/use-assets';
+import { useAssets, useDeleteAsset, useUploadAsset } from '@/hooks/use-assets';
 import { gallerySlots, testimonialSlots, type SlotDef } from '@/lib/slots';
 import type { ContentAsset } from '@/lib/api';
 
@@ -80,7 +91,9 @@ function SlotCard({
   loading: boolean;
 }) {
   const upload = useUploadAsset();
+  const deleteMutation = useDeleteAsset();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const hasAsset = Boolean(asset);
   const currentUrl = asset?.url ?? slotDef.fallback;
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +107,13 @@ function SlotCard({
         onError: (error) => toast.error(error.message),
       },
     );
+  };
+
+  const handleDelete = () => {
+    deleteMutation.mutate(slotDef.slot, {
+      onSuccess: () => toast.success(`تم حذف ${slotDef.slot}`),
+      onError: (error) => toast.error(error.message),
+    });
   };
 
   return (
@@ -117,15 +137,46 @@ function SlotCard({
           onChange={handleFileChange}
           data-testid={`input-file-${slotDef.slot}`}
         />
-        <Button
-          size="sm"
-          variant="outline"
-          disabled={upload.isPending}
-          onClick={() => fileInputRef.current?.click()}
-          data-testid={`button-upload-${slotDef.slot}`}
-        >
-          {upload.isPending ? 'جاري الرفع...' : 'استبدال'}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex-1"
+            disabled={upload.isPending}
+            onClick={() => fileInputRef.current?.click()}
+            data-testid={`button-upload-${slotDef.slot}`}
+          >
+            {upload.isPending ? 'جاري الرفع...' : hasAsset ? 'استبدال' : 'رفع'}
+          </Button>
+          {hasAsset && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  disabled={deleteMutation.isPending}
+                  data-testid={`button-delete-${slotDef.slot}`}
+                >
+                  حذف
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent dir="rtl">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>حذف {slotDef.slot}؟</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    سيعود هذا العنصر لعرض الملف الافتراضي على الصفحة العامة حتى يتم رفع ملف جديد.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete} data-testid={`button-confirm-delete-${slotDef.slot}`}>
+                    حذف
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

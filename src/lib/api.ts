@@ -83,3 +83,8 @@ export async function replaceAsset(
     body: JSON.stringify(data),
   });
 }
+
+export async function deleteAsset(slot: string): Promise<void> {
+  const res = await apiFetch(`/assets/${slot}`, { method: 'DELETE' });
+  if (!res.ok) throw new ApiError(res.status, await parseErrorMessage(res));
+}
