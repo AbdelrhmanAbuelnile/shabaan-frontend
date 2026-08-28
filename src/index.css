@@ -194,10 +194,10 @@
 .price { font-family: 'Space Grotesk', sans-serif; font-size: 3.8rem; letter-spacing: -.08em; color: var(--lime); font-weight: 700; direction: ltr; }
 .price small { font-family: 'Cairo', sans-serif; font-size: 1rem; letter-spacing: 0; color: #b7c1ba; }
 .old-price { color: #737d77; text-decoration: line-through; font-size: .9rem; }
-.plan-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 13px; }
+.plan-list { list-style: none; padding: 0; margin: 0 0 28px; display: grid; gap: 13px; }
 .plan-list li { display: flex; align-items: center; gap: 10px; color: #bdc8c0; font-size: .86rem; }
 .plan-list svg { color: var(--green); flex: none; }
-.plan-card .button-primary { margin-top: auto; width: 100%; }
+.plan-card .button-primary, .plan-card .button-outline { margin-top: auto; width: 100%; }
 
 .steps { background: #0b0d0d; }
 .step-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
