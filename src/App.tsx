@@ -44,8 +44,8 @@ function Home() {
 
 	const whatsappBase = "https://wa.me/201000257565";
 	const messages = {
-		training: "السلام عليكم، عايز اشترك في باقة التدريب والتغذية 800 جنيه",
-		nutrition: "السلام عليكم، عايز اشترك في باقة التغذية فقط 600 جنيه",
+		training: "السلام عليكم، عايز اشترك في باقة التدريب والتغذية 799 جنيه",
+		nutrition: "السلام عليكم، عايز اشترك في باقة التغذية فقط 599 جنيه",
 		general: "السلام عليكم، عايز استفسر عن التدريب اونلاين",
 	};
 	const whatsapp = (message: string) =>
@@ -276,7 +276,7 @@ function Home() {
 								<p className="plan-sub">حل متكامل لهدفك</p>
 								<div className="price-wrap">
 									<div className="price">
-										800 <small>جنيه / شهريا</small>
+										799 <small>جنيه / شهريا</small>
 									</div>
 									<span className="old-price">بدل 1000 جنيه</span>
 								</div>
@@ -314,7 +314,7 @@ function Home() {
 								<p className="plan-sub">نظام واضح تقدر تلتزم به</p>
 								<div className="price-wrap">
 									<div className="price">
-										600 <small>جنيه / شهريا</small>
+										599 <small>جنيه / شهريا</small>
 									</div>
 									<span className="old-price">بدل 800 جنيه</span>
 								</div>
