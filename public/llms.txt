@@ -1,0 +1,23 @@
+# SHABAAN
+
+> SHABAAN is an online personal training and nutrition coaching service (Arabic-language, Egypt-based). This site is a single-page landing page describing the coaching packages, pricing, and how to subscribe.
+
+Coaching plans, pricing, client results, and audio testimonials are on the homepage. Subscription and contact happen entirely through WhatsApp — there is no in-page checkout or account system. The `/admin` area is a private content-management dashboard for the site owner only; it is not part of the public offering and should not be crawled or indexed (see `/robots.txt`).
+
+## Pages
+
+- [Homepage](https://shabaan-online-coaching.vercel.app/): Full landing page — hero, "how it works" steps, training/nutrition packages and pricing, client transformation gallery, audio testimonials, FAQ, and WhatsApp contact.
+- [Sitemap](https://shabaan-online-coaching.vercel.app/sitemap.xml): XML sitemap.
+
+## Packages
+
+- Training + Nutrition (تدريب + تغذية): 799 EGP/month — full coaching plan with continuous follow-up.
+- Nutrition only (تغذية فقط): 599 EGP/month — nutrition plan with follow-up and adjustments.
+
+## Contact
+
+- WhatsApp: +20 100 025 7565
+
+## Optional
+
+- [robots.txt](https://shabaan-online-coaching.vercel.app/robots.txt): Crawl rules — disallows `/admin`.

@@ -6,7 +6,7 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SHABAAN | تدريب اونلاين وتغذية - خطط شخصية ومتابعة مستمرة</title>
     <meta name="description" content="اشترك في تدريب اونلاين وتغذية مع SHABAAN: خطة تدريب وتغذية مبنية على هدفك، متابعة مستمرة وتعديل الخطة حسب تقدمك. باقات تبدأ من 599 جنيه شهريًا، التواصل والاشتراك عبر WhatsApp." />
     <link rel="canonical" href="https://shabaan-online-coaching.vercel.app/" />
@@ -35,7 +35,13 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Loaded non-render-blocking: preload + swap the media type once
+         fetched (font-display=swap in the URL already means text paints
+         in a fallback font immediately either way, so this only saves the
+         synchronous stylesheet fetch delaying first paint). -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
     <script type="application/ld+json">
       {

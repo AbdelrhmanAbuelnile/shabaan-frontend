@@ -14,6 +14,10 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    // No legacy-browser support needed — matches tsconfig's es2022 target
+    // and avoids esbuild/rollup emitting down-level transform helpers for
+    // browsers this app doesn't need to run on.
+    target: 'es2022',
   },
   server: {
     port: 5173,

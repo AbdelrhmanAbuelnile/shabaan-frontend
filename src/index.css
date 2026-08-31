@@ -299,8 +299,7 @@
 			rgba(8, 11, 10, 0.72) 44%,
 			rgba(8, 11, 10, 0.42) 100%
 		),
-		url("/assets/طابع_الهوية_البصرية_1787767467021.png") center / cover
-			no-repeat;
+		url("/assets/hero-texture.webp") center / cover no-repeat;
 	opacity: 0.92;
 }
 .hero::after {
@@ -376,7 +375,7 @@
 	position: absolute;
 	bottom: 45px;
 	left: 0;
-	color: #6f7e73;
+	color: #808f85;
 	font-family: "Space Grotesk", sans-serif;
 	font-size: 0.65rem;
 	letter-spacing: 0.15em;
@@ -531,7 +530,7 @@
 	color: #b7c1ba;
 }
 .old-price {
-	color: #737d77;
+	color: #808f85;
 	text-decoration: line-through;
 	font-size: 0.9rem;
 }
@@ -916,7 +915,7 @@
 	direction: ltr;
 }
 .footer-contact span {
-	color: #708076;
+	color: #808f85;
 	font-size: 0.72rem;
 }
 .footer-bottom {
@@ -924,7 +923,7 @@
 	display: flex;
 	justify-content: space-between;
 	gap: 20px;
-	color: #65736a;
+	color: #808f85;
 	font-size: 0.7rem;
 }
 .footer-en {

@@ -85,7 +85,7 @@ export function Home() {
 					</button>
 					<img
 						className="brand-logo"
-						src="/assets/shabaan-logo-transparent.png"
+						src="/assets/shabaan-logo.webp"
 						alt="شعار شعبان SHABAAN"
 						data-testid="img-header-logo"
 					/>
@@ -551,7 +551,7 @@ export function Home() {
 						<div className="footer-brand">
 							<img
 								className="footer-logo"
-								src="/assets/shabaan-logo-transparent.png"
+								src="/assets/shabaan-logo.webp"
 								alt="شعار شعبان SHABAAN"
 								data-testid="img-footer-logo"
 							/>
