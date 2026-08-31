@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLogin, useMe } from '@/hooks/use-auth';
+import { useNoIndex } from '@/hooks/use-no-index';
 
 export default function AdminLogin() {
+  useNoIndex();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [, navigate] = useLocation();

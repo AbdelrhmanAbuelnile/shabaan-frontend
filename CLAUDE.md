@@ -9,7 +9,7 @@ The public-facing Arabic RTL landing page for SHABAAN's online personal training
 ## Commands
 
 - `npm run dev` — dev server, http://localhost:5173
-- `npm run build` — production build to `dist/`
+- `npm run build` — production build to `dist/`, then runs `scripts/prerender.mjs` to inject static SSR markup for "/" into `dist/index.html` (see Architecture below)
 - `npm run serve` — preview the production build locally
 - `npm run typecheck` — `tsc --noEmit`
 - No test runner is configured.
@@ -18,7 +18,9 @@ Env: `VITE_API_URL` (backend base URL, no `/api` suffix — see `.env.example`).
 
 ## Architecture
 
-**Public page (`src/App.tsx`):** one large `Home` component — hero, plans, "how it works" steps, results gallery, audio testimonials, FAQ, footer. The chat-screenshot section (`#proof`) that used to sit between testimonials and FAQ was removed entirely at the user's request — it's not coming back as static content or an admin-editable section, don't reintroduce it.
+**Public page (`src/pages/home.tsx`):** one large `Home` component — hero, plans, "how it works" steps, results gallery, audio testimonials, FAQ, footer. `src/App.tsx` is just the router shell (`QueryClientProvider` + wouter routes) and imports `Home` from here — `Home` was pulled out of `App.tsx` so `src/entry-prerender.tsx` could SSR it at build time (see below) without dragging in `App.tsx`'s admin-dashboard/login imports, which aren't SSR-safe. The chat-screenshot section (`#proof`) that used to sit between testimonials and FAQ was removed entirely at the user's request — it's not coming back as static content or an admin-editable section, don't reintroduce it.
+
+**Prerendering (`src/entry-prerender.tsx`, `scripts/prerender.mjs`):** this is a client-only Vite SPA (no SSR framework), so `npm run build`'s plain `vite build` output leaves `dist/index.html` with an empty `#root` div until JS runs — bad for crawlers/AI agents that don't execute JS. `npm run build` runs `scripts/prerender.mjs` afterward, which does a one-off Vite SSR build of `src/entry-prerender.tsx` (renders `<Home/>` via `react-dom/server`'s `renderToStaticMarkup`, with an empty `QueryClient` so `useAssets()` has no data and every gallery/testimonial slot renders its static fallback) and string-replaces the result into `dist/index.html`'s `#root`. This is a plain prerender, not hydration — the client still calls `createRoot(...).render()` on load, which just replaces the prerendered children normally. If you add new top-level state/data dependencies to `Home`, make sure they still render something sane with no backend response (same pattern as the existing `asset?.url ?? fallback` reads).
 
 The results gallery (`gallery-1`..`gallery-6`) and audio testimonials (`testimonial-1`..`testimonial-6`) — plus any admin-added extras beyond those 12, see below — read their URLs from `useAssets()` (`src/hooks/use-assets.ts`, `GET /api/assets`, react-query, `retry: false`), falling back to the original bundled `public/assets` files (`src/lib/slots.ts`) whenever a fixed slot has no backend asset yet or the request fails outright (no `MONGODB_URI` configured, backend down, etc.). This fallback is why `retry: false` matters here — react-query's default retry-with-backoff would leave the admin dashboard's slot cards showing a stuck loading spinner for several seconds on any failure before falling back; the public page isn't blocked by it either way since it just reads `asset?.url ?? fallback`, but the retry storm was pointless network noise.
 

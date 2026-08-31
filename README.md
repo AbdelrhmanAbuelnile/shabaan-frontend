@@ -5,7 +5,7 @@ Arabic RTL landing page for SHABAAN's online personal training / nutrition coach
 ## Commands
 
 - `npm run dev` — start the dev server (http://localhost:5173)
-- `npm run build` — production build to `dist/`
+- `npm run build` — production build to `dist/`, then prerenders the "/" route's static markup into `dist/index.html` (see `scripts/prerender.mjs`)
 - `npm run serve` — preview the production build locally
 - `npm run typecheck` — TypeScript check with no emit
 
@@ -19,7 +19,9 @@ Deployed as a static Vite build on Vercel. `vercel.json` rewrites all routes to 
 
 ## Structure
 
-- `src/App.tsx` — the public landing page (hero, plans, gallery, testimonials, FAQ, footer) as one component. Reads `gallery-N`/`testimonial-N` image/audio URLs from the backend via `useAssets`, falling back to the bundled `public/assets` files for any slot with nothing uploaded yet (or if the request fails).
+- `src/App.tsx` — router shell (QueryClientProvider, wouter routes).
+- `src/pages/home.tsx` — the public landing page (hero, plans, gallery, testimonials, FAQ, footer) as one component. Reads `gallery-N`/`testimonial-N` image/audio URLs from the backend via `useAssets`, falling back to the bundled `public/assets` files for any slot with nothing uploaded yet (or if the request fails). Kept separate from `App.tsx` so `src/entry-prerender.tsx` can SSR it at build time without pulling in the admin dashboard's dependencies.
+- `scripts/prerender.mjs` — post-`vite build` step: SSR-renders `Home` via a Vite SSR build of `src/entry-prerender.tsx` and injects the resulting markup into `dist/index.html`'s `#root`, so crawlers/AI agents that don't run JS still see real hero/plans/FAQ content instead of an empty shell.
 - `src/pages/admin-login.tsx`, `src/pages/admin-dashboard.tsx` — `/admin` and `/admin/dashboard`. The dashboard is client-side gated on `GET /api/auth/me` and lets the admin add, replace, or delete gallery photos and testimonial voicenotes.
 - `src/lib/api.ts` — fetch wrapper (`credentials: 'include'` for the auth cookie) plus the Cloudinary direct-upload helper.
 - `src/lib/slots.ts` — the slot ID ↔ static-fallback-file mapping shared by the public page and the dashboard.

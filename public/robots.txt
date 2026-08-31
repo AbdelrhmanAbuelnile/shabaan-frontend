@@ -1,2 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+
+Sitemap: https://shabaan-online-coaching.vercel.app/sitemap.xml

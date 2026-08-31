@@ -5,12 +5,12 @@ export interface SlotDef {
 }
 
 const GALLERY_FALLBACKS = [
-  '/assets/1_1787767467021.jpeg',
-  '/assets/1_-_2_1787767467021.jpeg',
-  '/assets/1_-_3_1787767467021.jpeg',
-  '/assets/2_-_1_1787767467021.jpeg',
-  '/assets/2_-_3_1787767467021.jpeg',
-  '/assets/2_-_2_1787767467022.jpeg',
+  '/assets/1_1787767467021.webp',
+  '/assets/1_-_2_1787767467021.webp',
+  '/assets/1_-_3_1787767467021.webp',
+  '/assets/2_-_1_1787767467021.webp',
+  '/assets/2_-_3_1787767467021.webp',
+  '/assets/2_-_2_1787767467022.webp',
 ];
 
 const TESTIMONIAL_FALLBACKS = [

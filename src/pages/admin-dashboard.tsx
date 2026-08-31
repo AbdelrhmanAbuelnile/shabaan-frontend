@@ -18,9 +18,11 @@ import {
 import { useLogout, useMe } from '@/hooks/use-auth';
 import { useAddAsset, useAssets, useDeleteAsset, useUploadAsset } from '@/hooks/use-assets';
 import { bySlotNumber, gallerySlots, isFixedSlot, testimonialSlots } from '@/lib/slots';
+import { useNoIndex } from '@/hooks/use-no-index';
 import type { ContentAsset } from '@/lib/api';
 
 export default function AdminDashboard() {
+  useNoIndex();
   const [, navigate] = useLocation();
   const { data: me, isLoading: meLoading } = useMe();
   const logout = useLogout();
